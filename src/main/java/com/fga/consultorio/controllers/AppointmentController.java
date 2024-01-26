@@ -1,6 +1,6 @@
 package com.fga.consultorio.controllers;
 
-import com.fga.consultorio.request.CreateAppointmentRequest;
+import com.fga.consultorio.dto.request.CreateAppointmentRequest;
 import com.fga.consultorio.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

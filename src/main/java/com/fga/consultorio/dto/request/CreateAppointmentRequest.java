@@ -1,4 +1,4 @@
-package com.fga.consultorio.request;
+package com.fga.consultorio.dto.request;
 
 import lombok.Data;
 import lombok.Getter;

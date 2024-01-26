@@ -1,6 +1,6 @@
 package com.fga.consultorio.controllers;
 
-import com.fga.consultorio.request.GetDoctorAppointmentsRequest;
+import com.fga.consultorio.dto.request.GetDoctorAppointmentsRequest;
 import com.fga.consultorio.services.DoctorScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

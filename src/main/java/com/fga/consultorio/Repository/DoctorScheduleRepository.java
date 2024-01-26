@@ -13,4 +13,6 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
 
     @Query(value = "SELECT * FROM get_available_appointments(:p_doctor_id, :p_day)", nativeQuery = true)
     List<String> getAvailableAppointments(@Param("p_doctor_id") Integer doctor_id, @Param("p_day") Date p_day);
+
+    DoctorSchedule findByDoctorIdAndAppointmentDateAndAppointmentHour(Long doctorId, String date, String appointmentHour);
 }

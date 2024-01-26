@@ -3,6 +3,7 @@ package com.fga.consultorio.services.impl;
 import com.fga.consultorio.Repository.AppointmentRepository;
 import com.fga.consultorio.Repository.DoctorScheduleRepository;
 import com.fga.consultorio.domain.Appointment;
+import com.fga.consultorio.domain.DoctorSchedule;
 import com.fga.consultorio.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     private DoctorScheduleRepository doctorScheduleRepository;
-
-    // Other dependencies and methods...
 
     public void createAppointment(Long patientId, Long doctorId, LocalDateTime appointmentDate, String patientEmail, String appointmentHour) {
         // Convert LocalDateTime to Date
@@ -41,5 +40,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentHour(appointmentHour);
 
         appointmentRepository.save(appointment);
+
+        // Update DoctorSchedule to mark the selected hour as not available
+        DoctorSchedule doctorSchedule = doctorScheduleRepository.findByDoctorIdAndAppointmentDateAndAppointmentHour(
+                doctorId, date.toString(), appointmentHour);
+
+        if (doctorSchedule != null) {
+            doctorSchedule.setAvailable(false);
+            doctorScheduleRepository.save(doctorSchedule);
+        } else {
+            throw new RuntimeException("DoctorSchedule not found for the specified date and hour.");
+        }
     }
 }
