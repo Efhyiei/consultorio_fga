@@ -22,14 +22,14 @@
                     <h4>User Registration</h4>
                 </div>
                 <div class="card-body">
-                    <form id="registrationForm" th:action="@{/consulting/users/registration}" method="post" th:object="${user}" novalidate>
+                    <form id="registrationForm" th:action="@{/consulting/users/auth/registration}" method="post" th:object="${user}" novalidate>
 
-                    <!-- Username -->
+                        <!-- Username -->
                         <div class="form-group">
                             <label class="control-label" for="username">Username:</label>
                             <input type="text" class="form-control" id="username" name="username" th:field="*{userName}" required>
-                            <div class="invalid-feedback">
-                                Please enter a username.
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('userName')}">
+                                <span th:errors="*{userName}"></span>
                             </div>
                         </div>
 
@@ -37,8 +37,8 @@
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <input type="email" class="form-control" id="email" name="email" th:field="*{email}" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid email address.
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}">
+                                <span th:errors="*{email}"></span>
                             </div>
                         </div>
 
@@ -46,14 +46,14 @@
                         <div class="form-group">
                             <label for="password">Password:</label>
                             <input type="password" class="form-control" id="password" name="password" th:field="*{password}" required>
-                            <div class="invalid-feedback">
-                                Please enter a password.
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}">
+                                <span th:errors="*{password}"></span>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-success">Register</button>
-                            <span>Already registered? <a href="/" th:href="@{/consulting/users/login}">Login here</a> </span>
+                            <span>Already registered? <a href="/" th:href="@{/consulting/users/auth/login}">Login here</a> </span>
                         </div>
                     </form>
                 </div>

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/consulting/doctors/schedule")
+@RequestMapping("api/v1/consulting/doctors/schedule")
 @Slf4j
 public class DoctorScheduleController {
 
