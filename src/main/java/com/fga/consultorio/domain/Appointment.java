@@ -1,5 +1,7 @@
 package com.fga.consultorio.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fga.consultorio.util.CustomDateDeserializer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Getter
@@ -24,14 +27,14 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "appointment_id")
     private Long id;
-    @Column(name = "patient_id")
-    private Long patientId;
     @Column(name = "doctor_id")
     private Long doctorId;
     @Column(name = "appointment_date")
-    private LocalDateTime appointmentDate;
+    private String appointmentDate;
     @Column(name = "patient_email")
     private String patientEmail;
+    @Column(name = "patient_name")
+    private String patientName;
     @Column(name = "appointment_hour")
     private String appointmentHour;
 }

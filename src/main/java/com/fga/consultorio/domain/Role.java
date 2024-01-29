@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Data
 @Getter
@@ -19,17 +20,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name = "patient")
-public class Patient {
-
+@Table(name = "role")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "patient_id")
-    private Long patientId;
-    @Column(name = "full_name")
-    private String fullName;
-    @Column(name = "email")
-    private String email;
+    @Column(name = "role_id")
+    private Long id;
+    @Column(name = "role_name")
+    private String roleName;
     @CreationTimestamp
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;

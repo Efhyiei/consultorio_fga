@@ -1,3 +1,6 @@
+logging:
+  level:
+    org.springframework: DEBUG
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -7,3 +10,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    user:
+      name: admin
+      password: adm0n2

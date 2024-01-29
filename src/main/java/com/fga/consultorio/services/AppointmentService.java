@@ -3,8 +3,9 @@ package com.fga.consultorio.services;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 public interface AppointmentService {
-    public void createAppointment(Long patientId, Long doctorId, LocalDateTime appointmentDate, String patientEmail, String appointmentHour);
+    public void createAppointment(Long doctorId, Date appointmentDate, String patientEmail, String patientName, String appointmentHour);
 }

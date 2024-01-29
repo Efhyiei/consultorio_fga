@@ -1,4 +1,4 @@
-package com.fga.consultorio.request;
+package com.fga.consultorio.dto.request;
 
 import lombok.Data;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 @Getter
 @Setter
-public class GetDoctorAppointmentsRequest {
+public class GetDoctorDayAppointmentsRequest {
     Integer doctorId;
     Date date;
 }

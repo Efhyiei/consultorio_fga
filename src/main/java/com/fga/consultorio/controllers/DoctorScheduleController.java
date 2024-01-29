@@ -1,30 +1,28 @@
 package com.fga.consultorio.controllers;
 
-import com.fga.consultorio.request.GetDoctorAppointmentsRequest;
+import com.fga.consultorio.dto.request.GetDoctorAppointmentsRequest;
+import com.fga.consultorio.dto.response.GetDoctorAppointmentsResponse;
 import com.fga.consultorio.services.DoctorScheduleService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/consulting/doctors/schedule")
+@RequestMapping("api/v1/consulting/doctors/schedule")
+@RequiredArgsConstructor
 @Slf4j
 public class DoctorScheduleController {
 
-    @Autowired
-    private DoctorScheduleService doctorScheduleService;
+    private final DoctorScheduleService doctorScheduleService;
 
     //Get available appointments by day
-    @GetMapping("/getAvailableAppointments")
-    public List<String> getAvailableAppointments(@RequestBody GetDoctorAppointmentsRequest request)
+    @PostMapping("/getAvailableAppointments")
+    public ResponseEntity<GetDoctorAppointmentsResponse> getAvailableAppointments(@RequestBody GetDoctorAppointmentsRequest request)
     {
-        log.info("doctorId: " + request.getDoctorId());
-        log.info("date: " + request.getDate());
-        return doctorScheduleService.getSchedulesByDay(request.getDoctorId(), request.getDate());
+        return ResponseEntity.ok(doctorScheduleService.getSchedulesByDay(request.getDoctorId(), request.getDate()));
     }
 }

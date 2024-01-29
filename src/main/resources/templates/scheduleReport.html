@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration</title>
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add these links to your existing <head> section -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Patient Registration</h2>
+
+    <form id="doctorSchduleReportForm">
+        <!-- Doctor Selection -->
+        <div class="form-group">
+            <label for="doctorSelect">Select Doctor:</label>
+            <select class="form-control" id="doctorSelect" name="doctorId">
+                <!-- Doctors will be populated dynamically from REST endpoint -->
+            </select>
+        </div>
+
+        <!-- Date Selection -->
+        <div class="form-group">
+            <label for="appointmentDate">Select Appointment Date:</label>
+            <input type="text" class="form-control" id="appointmentDate" name="appointmentDate" required>
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Get Schedule</button>
+    </form>
+
+    <table id="doctorScheduleTable" class="table">
+        <thead>
+        <tr>
+            <th>Patient Name</th>
+            <th>Patient Email</th>
+            <th>Appointment Date</th>
+            <th>Appointment Hour</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Bootstrap JS dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Bootstrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+<!-- Your custom script to fetch and populate doctors in the dropdown -->
+<script>
+    var selectedDoctorId = 1;
+    // Fetch and populate doctors in the dropdown
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/v1/consulting/doctors/findAll',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.doctors && Array.isArray(response.doctors)) {
+                    var doctors = response.doctors;
+                    var doctorSelect = $('#doctorSelect');
+                    doctors.forEach(function (doctor) {
+                        var option = $('<option>').val(doctor.id).text(doctor.fullName);
+                        doctorSelect.append(option);
+                    });
+
+                    // Set the selectedDoctorId when the doctor is selected
+                    doctorSelect.change(function () {
+                        selectedDoctorId = doctorSelect.val();
+                    });
+                } else {
+                    console.error('Invalid response format. Expected an array of doctors.');
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching doctors:', error);
+            }
+        });
+    });
+
+    // Your custom validation or submission logic here
+    $('#doctorSchduleReportForm').submit(function (event) {
+        // Prevent the form from submitting normally
+        event.preventDefault();
+
+        // Your custom logic to handle form submission
+        // Get the selected doctor ID, appointment date, and update the table
+        var selectedDoctorId = $('#doctorSelect').val();
+        var selectedDate = $('#appointmentDate').val();
+
+        // Make the AJAX request
+        $.ajax({
+            url: '/api/v1/consulting/doctors/schedule/getDoctorScheduleByDay',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ doctorId: selectedDoctorId, date: selectedDate }),
+            success: function (response) {
+                // Check if the response has the "appointments" property and it's an array
+                if (response.appointments && Array.isArray(response.appointments)) {
+                    var doctorScheduleTable = $("#doctorScheduleTable tbody");
+                    doctorScheduleTable.empty(); // Clear the existing table body content
+
+                    // Iterate through the fetched data and append rows to the table
+                    response.appointments.forEach(function (appointment) {
+                        var row = $("<tr>")
+                            .append($("<td>").text(appointment.patientName))
+                            .append($("<td>").text(appointment.patientEmail))
+                            .append($("<td>").text(appointment.appointmentDate))
+                            .append($("<td>").text(appointment.appointmentHour));
+
+                        doctorScheduleTable.append(row);
+                    });
+                } else {
+                    // Handle invalid response format
+                    $("#doctorScheduleTable tbody").html("<tr><td colspan='4'>Error: Invalid response format</td></tr>");
+                    console.error('Invalid response format. Expected an array under "appointments".');
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching doctor schedule:', error);
+            }
+        });
+    });
+
+    // Initialize datepicker
+        $('#appointmentDate').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+    // Modify the submit event handler to update the table
+    $('#doctorSchduleReportForm').submit(function (event) {
+        // Prevent the form from submitting normally
+        event.preventDefault();
+
+        // Get the selected doctor ID, appointment date, and update the table
+        var selectedDoctorId = $('#doctorSelect').val();
+        var selectedDate = $('#appointmentDate').val();
+
+        // Make the AJAX request
+        $.ajax({
+            url: '/api/v1/consulting/appointments/getDoctorDaySchedule',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ doctorId: selectedDoctorId, date: selectedDate }),
+            success: function (response) {
+                // Check if the response is an array and not empty
+                if (Array.isArray(response) && response.length > 0) {
+                    var doctorScheduleTable = $("#doctorScheduleTable tbody");
+                    doctorScheduleTable.empty(); // Clear the existing table body content
+
+                    // Iterate through the fetched data and append rows to the table
+                    response.forEach(function (appointment) {
+                        var row = $("<tr>")
+                            .append($("<td>").text(appointment.patientName))
+                            .append($("<td>").text(appointment.patientEmail))
+                            .append($("<td>").text(appointment.appointmentDate))
+                            .append($("<td>").text(appointment.appointmentHour));
+
+                        doctorScheduleTable.append(row);
+                    });
+                } else {
+                    // Handle empty or invalid response
+                    $("#doctorScheduleTable tbody").html("<tr><td colspan='4'>Error: Invalid or empty response</td></tr>");
+                    console.error('Invalid or empty response. Expected a non-empty array.');
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching doctor schedule:', error);
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>
